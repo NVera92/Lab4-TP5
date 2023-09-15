@@ -17,25 +17,102 @@ function company_API(url, method) {
     });
 }
 
+ function getCompanyName(companies, id) {
+    let name;
+    try {
+        companies.forEach(e => {
+            if (id == e.companyId) {
+                name = e.name;
+            }
+        })
+    } catch {
+        console.log('ERROR AL OBTENER NOMBRE DE COMPANIA');
+    }
+
+    return name;
+}
+/*
+function getEmployeesApi() {
+    let employees;
+    company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
+        .then((e) => {
+            employees = e;
+            console.log(e);   
+        })
+        .catch((reason) => {
+            console.log(Error(reason));
+        });
+        return employees;
+}
+
+
+function getCompaniesApi(){
+    let companies;
+    company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
+        .then((c) => {
+            companies = c;   
+        })
+        .catch((reason) => {
+            console.log(Error(reason));
+        });
+        return companies;
+}
+
+class Employee{
+
+    constructor(id,companyName,firstName,lastName,email){
+        this.id = id;
+        this.companyName = companyName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    
+}
+
+function carga(employees,companies){
+    let employeesWithCompanies;
+    try{
+        console.log(employees);
+        //employees.forEach(e =>{
+            //let companyName = getCompanyName(companies,e.companyId);
+            //console.log(companyName);
+            //employeesWithCompanies.push(new Employee(e.id,companyName,e.firstName,e.lastName,e.email));
+        
+    }catch{
+        console.log('ERROR!!');
+    }
+    return employeesWithCompanies;
+}
+
 
 // Punto 1
-let empleados;
+let employees = getEmployeesApi();
+let companies = getCompaniesApi();
+
+let employeesWithCompanies = carga(employees,companies); */
+
+
+
 
 company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
-  .then((employees) => {
-      //console.log(employees);
-      company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company','GET')
-      .then((company) =>{
-        //console.log(company);
-        
+    .then((employees) => {
+        //console.log(employees);
+        company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
+            .then((company) => {
+                //console.log(company);
+                let p = document.querySelector('p');
+                p.textContent = 'LISTADO DE EMPLADOS Y SUS COMPANIAS:';
+                employees.forEach(e =>{p.textContent +="Nombre: "+ e.firstName+" "+e.lastName+"  Compania:  "+(getCompanyName(company,e.companyId)+" , ")});
 
-      })
-  })
-  .catch((reason) => {
-      console.log(Error(reason));
-  });
+            })
+    })
+    .catch((reason) => {
+        console.log(Error(reason));
+    });
 
-  
+
 
 
 
@@ -102,7 +179,7 @@ company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
                console.error("Error:", error);
            }); */
 
-           
+
 /*       company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee/523', 'DELETE')
           .then((employees) => {
                   console.log('se elimno :)');
