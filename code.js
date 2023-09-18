@@ -1,4 +1,5 @@
-function company_API(url, method) {
+// TRAER LAS COMPANIAS DE LA API
+function getApi(url, method) {
     return new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
         request.open(method, url);
@@ -17,7 +18,44 @@ function company_API(url, method) {
     });
 }
 
- function getCompanyName(companies, id) {
+// AGREGAR UN EMPLEADO A LA API
+/* ESTO ASI COMO ESTA FUNCIONO!! MEJORAR
+function postCompanyApi(url,employee){
+    let xhr = new XMLHttpRequest();
+    let json = JSON.stringify(employee);
+    xhr.open('POST','https://utn-lubnan-api-1.herokuapp.com/api/Employee');
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.send(json);
+    
+}
+*/
+
+// Funcion mejorada de POST con Promise
+function postEmployeeApi(url, employee) {
+    return new Promise(function (resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        let json = JSON.stringify(employee);
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            if (xhr.status == 200) {
+                resolve(xhr.response);
+            } else {
+                reject(Error('Error al cargar empleado ' + xhr.statusText));
+            }
+        }
+
+        xhr.onerror = function () {
+            reject(Error('Oops!, error de RED'));
+        }
+
+        xhr.send(json);
+
+    });
+}
+
+// OBTENER LOS NOMBRE DE LAS EMPRESAS A PARTIR DEL ID
+function getCompanyName(companies, id) {
     let name;
     try {
         companies.forEach(e => {
@@ -31,6 +69,37 @@ function company_API(url, method) {
 
     return name;
 }
+
+class Employee {
+
+    constructor(companyId, firstName, lastName, email) {
+        this.companyId = companyId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+
+}
+
+/// BORRAR UN EMPLEADO DE LA API
+function deleteEmployeeApi(url){
+    return new Promise(function(resolve,reject){
+        let xhr = new XMLHttpRequest();
+        xhr.open('DELETE',url);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function (){
+            if(xhr.status == 200){
+                resolve(xhr.response);
+            }else{
+                reject(Error('ERROR AL BORRAR EMPLEADO!! '+ xhr.statusText));
+            }
+        }
+        xhr.send(null);
+    });
+
+}
+
 /*
 function getEmployeesApi() {
     let employees;
@@ -93,56 +162,6 @@ let companies = getCompaniesApi();
 
 let employeesWithCompanies = carga(employees,companies); */
 
-
-
-
-company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
-    .then((employees) => {
-        //console.log(employees);
-        company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
-            .then((company) => {
-                //console.log(company);
-                let p = document.querySelector('p');
-                p.textContent = 'LISTADO DE EMPLADOS Y SUS COMPANIAS:';
-                employees.forEach(e =>{p.textContent +="Nombre: "+ e.firstName+" "+e.lastName+"  Compania:  "+(getCompanyName(company,e.companyId)+" , ")});
-
-            })
-    })
-    .catch((reason) => {
-        console.log(Error(reason));
-    });
-
-
-
-
-
-
-/* company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
-  .then((employees) => {
-      console.log(employees);
-      let paragraph = document.querySelector('p');
-      paragraph.textContent = 'EMPLOYEE MAILS: ';
-      employees.forEach(employee => { paragraph.textContent += employee.name + ", "; });
-  })
-  .catch((reason) => {
-      console.log(Error(reason));
-  }); */
-
-/*  company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
-     .then((company) => {
-         console.log(company);
-
-         let paragraph = document.querySelector('a');
-         paragraph.textContent = 'COMPANIES: ';
-         company.forEach(company => {
-          paragraph.textContent += company.companyId + ", ";
-         });
-     })
-     .catch((reason2) => {
-         console.log(Error(reason2));
-     }); */
-
-
 /*        company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
            .then((employees) => {
                return company_API('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
@@ -180,25 +199,47 @@ company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
            }); */
 
 
-/*       company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee/523', 'DELETE')
-          .then((employees) => {
-                  console.log('se elimno :)');
-          })
-          .catch((reason) => {
-              console.log(Error(reason));
-          }); */
+getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
+    .then((employees) => {
+        //console.log(employees);
+        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
+            .then((company) => {
+                //console.log(company);
+                let p = document.querySelector('p');
+                p.textContent = 'LISTADO DE EMPLADOS Y SUS COMPANIAS:';
+                employees.forEach(e => { p.textContent += "Nombre: " + e.firstName + " " + e.lastName + "  Compania:  " + (getCompanyName(company, e.companyId) + " , ") });
+
+            })
+    })
+    .catch((reason) => {
+        console.log(Error(reason));
+    });
 
 
+let nuevo = new Employee(2, 'Lucas', 'Medina', 'lucas@medina.com');
 
+//postCompanyApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee',nuevo); ESTE LLAMADO FUNCIONO
+/*
+postEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', nuevo)
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((reason) => {
+        console.log('ERRORR!!');
+    })
 
+*/
 
 /*
-company_API('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'POST')
-    .then((response) => {
+let id = 7;
+
+deleteEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee/'+id)
+    .then((response) =>{
+        console.log('Empleado N°'+id+' fue BORRADO!!');
     })
-    .catch((error) => {
-        console.error("Error:", error);
-        console.log(error);
-  
-  });
-  */
+    .catch((reason) =>{
+        console.log(Error(reason));
+    })
+
+*/
+
