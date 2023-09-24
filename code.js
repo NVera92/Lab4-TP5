@@ -18,6 +18,8 @@ function getApi(url, method) {
     });
 }
 
+
+
 // AGREGAR UN EMPLEADO A LA API
 /* ESTO ASI COMO ESTA FUNCIONO!! MEJORAR
 function postCompanyApi(url,employee){
@@ -198,7 +200,7 @@ let employeesWithCompanies = carga(employees,companies); */
                console.error("Error:", error);
            }); */
 
-
+/*EJECUCION DE LA PETICION DE EMPLEADOS Y COMPANIAS
 getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
     .then((employees) => {
         //console.log(employees);
@@ -214,9 +216,26 @@ getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
     .catch((reason) => {
         console.log(Error(reason));
     });
+*/
 
+// TRAE LAS COMPANIAS DE LA API AL FORM
+function companiesToHtml(){
+    try{
+        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Company','GET')
+        .then((companies) =>{
+            companies.forEach(e => {
+                let opt = document.createElement("option");
+                opt.innerHTML = e.name;
+                opt.value = e.companyId;
+                document.getElementById('eCompany').appendChild(opt);
+            })
+        })
+        
+    }catch{
+        console.log('ERROR!!!!');
+    }
+}
 
-let nuevo = new Employee(2, 'Lucas', 'Medina', 'lucas@medina.com');
 
 //postCompanyApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee',nuevo); ESTE LLAMADO FUNCIONO
 /*
@@ -242,4 +261,42 @@ deleteEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee/'+id)
     })
 
 */
+
+// CARGA DE EMPLEADO A TERMINAR!!!
+function formToEmployee(){
+    try{
+        let company = document.getElementById('eCompany');
+        //console.log(company.value);
+        let name = document.getElementById('eName');
+        //console.log(name.value);
+        let lastName = document.getElementById('eLastname');
+        //console.log(lastName.value);
+        let email = document.getElementById('eEmail');
+        //console.log(email.value);
+        let emp = new Employee(company.value-1,name.value,lastName.value,email.value);
+        //console.log(emp)
+        postEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee',emp)
+        .then((response) => {
+            alert('Empleado agregado con exito!!');
+            location.href = "http://127.0.0.1:5500/";
+        })           
+    }catch{
+        console.log('ERROR AL ENVIAR EMPLEADO');
+    }
+}
+
+
+function checkEmployeeId(){
+    try{
+        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee','GET')
+        .then((response) => {
+            alert('aca');
+        })
+    }catch{
+        console.log('ERRORRR!!');
+    }
+}
+
+
+
 
