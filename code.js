@@ -85,16 +85,16 @@ class Employee {
 }
 
 /// BORRAR UN EMPLEADO DE LA API
-function deleteEmployeeApi(url){
-    return new Promise(function(resolve,reject){
+function deleteEmployeeApi(url) {
+    return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
-        xhr.open('DELETE',url);
+        xhr.open('DELETE', url);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.onload = function (){
-            if(xhr.status == 200){
+        xhr.onload = function () {
+            if (xhr.status == 200) {
                 resolve(xhr.response);
-            }else{
-                reject(Error('ERROR AL BORRAR EMPLEADO!! '+ xhr.statusText));
+            } else {
+                reject(Error('ERROR AL BORRAR EMPLEADO!! ' + xhr.statusText));
             }
         }
         xhr.send(null);
@@ -219,19 +219,19 @@ getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
 */
 
 // TRAE LAS COMPANIAS DE LA API AL FORM
-function companiesToHtml(){
-    try{
-        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Company','GET')
-        .then((companies) =>{
-            companies.forEach(e => {
-                let opt = document.createElement("option");
-                opt.innerHTML = e.name;
-                opt.value = e.companyId;
-                document.getElementById('eCompany').appendChild(opt);
+function companiesToHtml() {
+    try {
+        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Company', 'GET')
+            .then((companies) => {
+                companies.forEach(e => {
+                    let opt = document.createElement("option");
+                    opt.innerHTML = e.name;
+                    opt.value = e.companyId;
+                    document.getElementById('eCompany').appendChild(opt);
+                })
             })
-        })
-        
-    }catch{
+
+    } catch {
         console.log('ERROR!!!!');
     }
 }
@@ -263,8 +263,8 @@ deleteEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee/'+id)
 */
 
 // CARGA DE EMPLEADO A TERMINAR!!!
-function formToEmployee(){
-    try{
+function formToEmployee() {
+    try {
         let company = document.getElementById('eCompany');
         //console.log(company.value);
         let name = document.getElementById('eName');
@@ -273,28 +273,50 @@ function formToEmployee(){
         //console.log(lastName.value);
         let email = document.getElementById('eEmail');
         //console.log(email.value);
-        let emp = new Employee(company.value-1,name.value,lastName.value,email.value);
+        let emp = new Employee(company.value - 1, name.value, lastName.value, email.value);
         //console.log(emp)
-        postEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee',emp)
-        .then((response) => {
-            alert('Empleado agregado con exito!!');
-            location.href = "http://127.0.0.1:5500/";
-        })           
-    }catch{
+        postEmployeeApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', emp)
+            .then((response) => {
+                alert('Empleado agregado con exito!!');
+                location.href = "http://127.0.0.1:5500/";
+            })
+    } catch {
         console.log('ERROR AL ENVIAR EMPLEADO');
     }
 }
 
 
-function checkEmployeeId(){
+function checkEmployeeId(eId) {
     try{
-        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee','GET')
-        .then((response) => {
-            alert('aca');
-        })
-    }catch{
-        console.log('ERRORRR!!');
-    }
+        getApi('https://utn-lubnan-api-1.herokuapp.com/api/Employee', 'GET')
+            .then((response) => {
+                console.log(eId);
+                let result = response.find((e) => e.employeeId == eId);
+                console.log(result);
+                if (result != undefined) {
+                    document.getElementById('deleteEmployee').disabled = false;
+                    document.getElementById('deleteEmployee').value = 'https://utn-lubnan-api-1.herokuapp.com/api/Employee/'+eId;
+                    console.log(document.getElementById('deleteEmployee').value);
+
+                }
+                /*
+                response.forEach(e => {
+                    Funciona pero no es el algoritmo optimo
+                    if(e.employeeId == employeeId){
+                        console.log('EXISTE');
+                    }else{
+                        console.log('ERROR!!');
+                    }
+                    
+                
+                })
+                */
+            })
+            .catch(console.log('Error!!!'));
+        }catch{
+            console.log('ERROR!!');
+        }
+    
 }
 
 
